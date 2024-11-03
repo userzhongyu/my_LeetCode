@@ -1,0 +1,38 @@
+暴力解：
+    将每一个元素当做矩形右下角元素，向上向左寻找尽可能多的连续的1
+    每一个‘高’对应一个列表，其中记录每一行连续1的个数作为‘宽’
+    取列表中最小的‘宽’与当前‘高’相乘作为‘面积’
+
+    class Solution:
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+        n = len(matrix)
+        m = len(matrix[0])
+        ans = 0
+        # 将每一个元素当做矩形右下角最后一个元素
+        for i in range(n):
+            for j in range(m):
+                tmp_i = i
+                tmp_j = j
+                width = []  # 记录每一列对应的最长宽度
+                height = 0
+                # 逐列寻找连续的'1'
+                while tmp_i >= 0 and matrix[tmp_i][tmp_j] == '1':
+                    tmp_width = 0
+                    height += 1
+                    # 逐行寻找连续的'1'
+                    while tmp_j >= 0 and matrix[tmp_i][tmp_j] == '1':
+                        tmp_width += 1
+                        tmp_j -= 1
+                    width.append(tmp_width)
+                    ans = max(ans, height * min(width))
+                    tmp_i -= 1
+                    tmp_j = j
+        return ans
+
+        超时
+
+
+结合84
+    将每一个行结合该行上面的行组合成一个矩形
+    计算出每一列的‘高度’，即连续的‘1’的‘高度’
+    转换成84题
