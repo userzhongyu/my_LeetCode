@@ -31,8 +31,10 @@ class Solution:
 
 
 def main():
-    s1 = input("s1:")
-    s2 = input("s2:")
+    # s1 = input("s1:")
+    # s2 = input("s2:")
+    s1 = "abcdefghijklmnopq"
+    s2 = "efghijklmnopqcadb"
     ans = Solution().isScramble(s1, s2)
     print(ans)
 
