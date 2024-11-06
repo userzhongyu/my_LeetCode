@@ -1,11 +1,29 @@
-# LeetCode
+# 算法
 
-## 85. 最大矩形
+## 动态规划
 
-暴力解：
-    将每一个元素当做矩形右下角元素，向上向左寻找尽可能多的连续的1
-    每一个‘高’对应一个列表，其中记录每一行连续1的个数作为‘宽’
-    取列表中最小的‘宽’与当前‘高’相乘作为‘面积’
+https://leetcode.cn/problems/scramble-string/solutions/51990/miao-dong-de-qu-jian-xing-dpsi-lu-by-sha-yu-la-jia/
+
+**对于动态规划问题，将拆解为如下五步曲，这五步都搞清楚了，才能说把动态规划真的掌握了！**
+
+1. 确定dp数组（dp table）以及下标的含义
+2. 确定递推公式
+3. dp数组如何初始化
+4. 确定遍历顺序
+5. 举例推导dp数组
+
+## 递归
+
+path用于存储路径
+
+ans用于存储答案
+
+
+
+# path
+
+​    每一个‘高’对应一个列表，其中记录每一行连续1的个数作为‘宽’
+​    取列表中最小的‘宽’与当前‘高’相乘作为‘面积’
 
 ```python
 class Solution:
@@ -44,7 +62,7 @@ def maximalRectangle(self, matrix: List[List[str]]) -> int:
 
 
 
-## 86. 分隔链表(链表创建代码)
+## [86. 分隔链表](https://leetcode.cn/problems/partition-list/)(链表创建代码)
 
 ```python
     def create_ListNode(self):
@@ -65,7 +83,7 @@ def maximalRectangle(self, matrix: List[List[str]]) -> int:
 
 
 
-## 87.扰乱字符串
+## [87. 扰乱字符串](https://leetcode.cn/problems/scramble-string/)
 
 ### 动态规划
 
@@ -240,7 +258,7 @@ if __name__ == '__main__':
 
 
 
-##  89. 格雷编码
+##  [89. 格雷编码](https://leetcode.cn/problems/gray-code/)
 
 存在问题：无法正确跳出递归。从path去除的数字放入con后，会再次放入path的相同位置，导致死循环
 
@@ -360,4 +378,97 @@ if __name__ == '__main__':
 
 ```
 
+## [90. 子集 II](https://leetcode.cn/problems/subsets-ii/)
+
+### 超时
+
+```python
+# 超时
+from typing import List
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        path = [[], ]
+        nums.sort()  # 排序，避免[1,2]和[2,1]都插入的情况
+        self.dfs(path, nums)
+        return path
+
+    def dfs(self, path: list, nums: List[int]):
+        if len(nums) == 0:
+            return
+        templst = []
+        for i in range(len(nums)):
+            templst.append(nums[i])
+            if templst not in path:
+                path.append(templst[:])  # 深拷贝
+            tempval = nums[i]
+            nums.remove(nums[i])
+            self.dfs(path, nums)
+            nums.insert(i, tempval)
+
+
+def main():
+    nums = [1, 4, 3, 5, 4, 4, 7, 7, 8, 0]
+    print(Solution().subsetsWithDup(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+### Accepted
+
+**思路**
+
+考虑数组 [1,2~1~,2~2~]，选择前两个数，或者第一、三个数，都会得到相同的子集。
+
+也就是说，对于当前选择的数 2~2~，若前面有与2~2~相同的2~1~，且没有选择 2~1~，此时包含2~2~ 的子集，必然会出现在包含2~1~ 的所有子集中。
+
+代码实现时，可以先将数组排序；迭代时，若发现没有选择上一个数，且当前数字与上一个数相同，则可以跳过当前生成的子集。
+
+
+
+
+i：本轮次当前操作到第i个元素
+
+j：操作i-len(nums)
+
+j == i：开始操作nums[j]
+
+j > i and nums[j] == nums[j-1]：当前元素与其前一个元素相同，且包含前一个元素的子集已经生成结束（前一个元素已经操作过了）
+
+```python
+from typing import List
+
+
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        ans = []
+        path = []
+        nums.sort()  # 排序，使得相同元素相邻
+        self.dfs(ans, path, nums, 0)
+        return ans
+
+    def dfs(self, ans: list, path: list, nums: List[int], i: int):
+        ans.append(path[:])  # 深拷贝
+        if i == len(nums):
+            return
+        for j in range(i, len(nums)):
+            if j > i and nums[j] == nums[j-1]:
+                continue
+            path.append(nums[j])
+            self.dfs(ans, path, nums, j+1)  # 本轮次已经操作到第j个元素，下一轮次从j+1开始操作
+            path.pop()
+
+
+def main() -> object:
+    # nums = [1, 4, 3, 5, 4, 4, 7, 7, 8, 0]
+    nums = [1, 2, 2]
+    print(Solution().subsetsWithDup(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
 
