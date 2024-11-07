@@ -26,4 +26,7 @@
 # print(num)
 
 
-print([1, 2, 3] in [1, 2, 3, 4])
+# print([1, 2, 3] in [1, 2, 3, 4])
+a = 'a'
+b = a+11
+print(b)
