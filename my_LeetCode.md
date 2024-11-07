@@ -72,6 +72,13 @@ def maximalRectangle(self, matrix: List[List[str]]) -> int:
         l = l[1: -1]
         l = l.split(',')
         n = len(l)
+        
+        # 头节点为空
+        # head = ListNode()
+        # tmp = ListNode(val=int(l[0]))
+        # head.next = tmp
+        
+        # 头节点存数据
         head = tmp = ListNode(val=int(l[0]))
         for i in range(1, n):
             new = ListNode(val=int(l[i]))
