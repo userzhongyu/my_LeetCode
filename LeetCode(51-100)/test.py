@@ -27,6 +27,24 @@
 
 
 # print([1, 2, 3] in [1, 2, 3, 4])
-a = 'a'
-b = a+11
-print(b)
+# a = 'a'
+# b = a+11
+# print(b)
+
+# lst = list(input()[1:-1].split(','))
+# lst = [int(i) for i in lst]
+# print(lst)
+
+# path = '123456'
+# tmp = '789'
+# path = path + tmp + '.'
+# print(path)
+# path = path[0: -len(tmp)-1]
+# print(path)
+
+# tmp = '01'
+# print(int(tmp))
+
+s = '123'
+t = s[2: 3]
+print(t)

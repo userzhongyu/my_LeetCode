@@ -65,23 +65,24 @@ def maximalRectangle(self, matrix: List[List[str]]) -> int:
 ## [86. 分隔链表](https://leetcode.cn/problems/partition-list/)(链表创建代码)
 
 ```python
+   	# 将输入的形如“[1,2,3,4,5]”的字符串转换成链表
     def create_ListNode(self):
-        l = input("input:")
-        if l == '[]':
+        lst = list(input("list:")[1:-1].split(','))
+        if lst == '[]':
             return ListNode()
-        l = l[1: -1]
-        l = l.split(',')
-        n = len(l)
-        
+        lst = [int(i) for i in lst]
+
+        n = len(lst)
+
         # 头节点为空
         # head = ListNode()
-        # tmp = ListNode(val=int(l[0]))
+        # tmp = ListNode(val=lst[0]
         # head.next = tmp
-        
+
         # 头节点存数据
-        head = tmp = ListNode(val=int(l[0]))
+        head = tmp = ListNode(val=lst[0])
         for i in range(1, n):
-            new = ListNode(val=int(l[i]))
+            new = ListNode(val=lst[i])
             tmp.next = new
             tmp = tmp.next
         return head
@@ -479,3 +480,69 @@ if __name__ == '__main__':
 
 ```
 
+
+
+## [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
+
+https://leetcode.cn/problems/restore-ip-addresses/solutions/100433/hui-su-suan-fa-hua-tu-fen-xi-jian-zhi-tiao-jian-by/
+
+思路：
+
+`path[]` 存储满足`0 <= tmp <= 255`的值
+
+`len(path) `就是地址的段数
+
+`index` 记录当前操作到什么位置了
+
+当`len(path) == 4 and index == len(s)` 时，说明`path[]`中存的数字所组成的地址是合理的
+
+`ans[]`存储满足要求的地址
+
+```python
+from typing import List
+
+
+class Solution:
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        ans = []
+        path = []
+
+        def dfs(__ans, __path, index: int):
+            if len(path) > 4:
+                return
+            if len(__path) == 4 and index == len(s):
+                __ans.append('.'.join(__path[:]))
+                return
+            # 检查随后的连续3个数字
+            for i in range(1, 4):
+                tmp = s[index: index+i]  # 切出需要进行判断的数字组合
+                if tmp and 0 <= int(tmp) <= 255 and str(int(tmp)) == tmp:  # 判断当前数字组合能否当做一个段地址
+                    path.append(tmp[:])
+                    dfs(__ans, __path, index+i)  # 深入
+                    path.pop()  # 恢复现场
+
+        dfs(ans, path, 0)
+        return ans
+
+
+def main():
+    # s = "25525511135"
+    s = '0000'
+    s = "101023"
+    print(Solution().restoreIpAddresses(s))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+`'.'.join(__path[:])`将列表转换成以`'.'`连接的字符串
+
+```python
+                if tmp and 0 <= int(tmp) <= 255 and str(int(tmp)) == tmp:  # 判断当前数字组合能否当做一个段地址
+```
+
+当下标越界时，`tmp == ''`
+
+当`tmp == 012`这种类似的数字时，`str(int(tmp)) != tmp`

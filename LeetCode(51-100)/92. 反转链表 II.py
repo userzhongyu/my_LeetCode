@@ -29,22 +29,23 @@ class Solution:
             p.next = r
         return head.next
 
-
     def create_ListNode(self):
-        l = input("input:")
-        if l == '[]':
+        lst = list(input("list:")[1:-1].split(','))
+        if lst == '[]':
             return ListNode()
-        l = l[1: -1]
-        l = l.split(',')
-        n = len(l)
+        lst = [int(i) for i in lst]
+
+        n = len(lst)
+
         # 头节点为空
         # head = ListNode()
-        # tmp = ListNode(val=int(l[0]))
+        # tmp = ListNode(val=lst[0]
         # head.next = tmp
+
         # 头节点存数据
-        head = tmp = ListNode(val=int(l[0]))
+        head = tmp = ListNode(val=lst[0])
         for i in range(1, n):
-            new = ListNode(val=int(l[i]))
+            new = ListNode(val=lst[i])
             tmp.next = new
             tmp = tmp.next
         return head
