@@ -546,3 +546,92 @@ if __name__ == '__main__':
 当下标越界时，`tmp == ''`
 
 当`tmp == 012`这种类似的数字时，`str(int(tmp)) != tmp`
+
+
+
+
+
+
+
+```
+# Definition for a binary tree node.
+from typing import List, Optional
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def generateTrees(self, n: int) -> List[Optional[TreeNode]]:
+        ans = []
+        con = []
+        for i in range(1, n + 1):
+            tmp = TreeNode(i)
+            con.append(tmp)
+
+        def dfs(head: TreeNode, last: TreeNode, con: List[TreeNode]):
+            if len(con) == 0:
+                path = []
+
+                # ans.append(path[1:])
+
+                # 递归生成path
+                def createPath(node: TreeNode):
+                    path.append(node)
+                    if node.left:
+                        createPath(node.left)
+                    elif node.right:
+                        path.append(TreeNode())
+                        createPath(node.right)
+                    for i in range(len(path)):
+                        print(path[i].val, end=',')
+                    return path
+
+                createPath(head)
+                ans.append(path[:])
+                return ans
+
+            # 确定一个头节点
+            for i in range(len(con)):
+                if not head:
+                    h = con[i]
+                    tmp = con[i]
+                    con.remove(con[i])
+                    dfs(h, tmp, con)
+                    con.insert(i, tmp)
+                elif con[i].val < last.val:
+                    last.left = con[i]
+                    tmp = con[i]
+                    con.remove(con[i])
+                    dfs(head, tmp, con)
+                    con.insert(i, tmp)
+                else:
+                    last.right = con[i]
+                    tmp = con[i]
+                    con.remove(con[i])
+                    dfs(head, tmp, con)
+                    con.insert(i, tmp)
+
+        dfs(None, None, con)
+        return ans
+
+
+def main():
+    n = 3
+    ans = Solution().generateTrees(n)
+    for i in range(len(ans)):
+        print('[', end='')
+        for j in range(len(ans[i])):
+            print(ans[i][j].val, end=',')
+        print(']')
+
+
+if __name__ == '__main__':
+    main()
+
+```
+

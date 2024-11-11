@@ -18,7 +18,6 @@
 # # print(e)  #
 
 
-
 # s = '123456'
 #
 # num = [int(i) for i in s]
@@ -44,7 +43,11 @@
 
 # tmp = '01'
 # print(int(tmp))
+#
+# s = '123'
+# t = s[2: 3]
+# print(t)
 
-s = '123'
-t = s[2: 3]
-print(t)
+lst = [1, 2, 3]
+lst = lst[: -2]
+print(lst)
