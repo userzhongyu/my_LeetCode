@@ -549,11 +549,9 @@ if __name__ == '__main__':
 
 
 
+## [95. 不同的二叉搜索树 II](https://leetcode.cn/problems/unique-binary-search-trees-ii/)
 
-
-
-
-```
+```python
 # Definition for a binary tree node.
 from typing import List, Optional
 
@@ -565,69 +563,88 @@ class TreeNode:
         self.right = right
 
 
+# 题解
 class Solution:
     def generateTrees(self, n: int) -> List[Optional[TreeNode]]:
-        ans = []
-        con = []
-        for i in range(1, n + 1):
-            tmp = TreeNode(i)
-            con.append(tmp)
+        def dfs(l, r):
+            if l > r:
+                return [None]
+            ans = []  # 从l到r的搜索树集合
+            # 选子树的根节点
+            for i in range(l, r + 1):
+                # 选一棵左子树
+                for x in dfs(l, i - 1):
+                    # 选一棵右子树
+                    for y in dfs(i + 1, r):
+                        # 以当前元素为根节点
+                        root = TreeNode(i)
+                        # 拼接上左子树和右子树
+                        root.left, root.right = x, y
+                        ans.append(root)  # 只需要将树的头节点放入列表
+            return ans
 
-        def dfs(head: TreeNode, last: TreeNode, con: List[TreeNode]):
-            if len(con) == 0:
-                path = []
-
-                # ans.append(path[1:])
-
-                # 递归生成path
-                def createPath(node: TreeNode):
-                    path.append(node)
-                    if node.left:
-                        createPath(node.left)
-                    elif node.right:
-                        path.append(TreeNode())
-                        createPath(node.right)
-                    for i in range(len(path)):
-                        print(path[i].val, end=',')
-                    return path
-
-                createPath(head)
-                ans.append(path[:])
-                return ans
-
-            # 确定一个头节点
-            for i in range(len(con)):
-                if not head:
-                    h = con[i]
-                    tmp = con[i]
-                    con.remove(con[i])
-                    dfs(h, tmp, con)
-                    con.insert(i, tmp)
-                elif con[i].val < last.val:
-                    last.left = con[i]
-                    tmp = con[i]
-                    con.remove(con[i])
-                    dfs(head, tmp, con)
-                    con.insert(i, tmp)
-                else:
-                    last.right = con[i]
-                    tmp = con[i]
-                    con.remove(con[i])
-                    dfs(head, tmp, con)
-                    con.insert(i, tmp)
-
-        dfs(None, None, con)
-        return ans
+        return dfs(1, n)
 
 
 def main():
-    n = 3
+    n = 5
     ans = Solution().generateTrees(n)
-    for i in range(len(ans)):
-        print('[', end='')
-        for j in range(len(ans[i])):
-            print(ans[i][j].val, end=',')
-        print(']')
+    print(len(ans))
+    # for i in range(len(ans)):
+    #     print('[', end='')
+    #     for j in range(len(ans[i])):
+    #         print(ans[i][j].val, end=',')
+    #     print(']')
+    # for i in range(len(ans)):
+    #     print(ans[i].val)
+    # print(ans[2].left.val)
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+## [96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)
+
+可以直接用95题的思路，求出`ans[]`后返回`len(ans)`，但是提交时，超时了
+
+
+
+卡特兰数是组合数学中一个常出现在各种计数问题中出现的数列。其公式为 :c(n)=c(2)*c(n-1)+c(3)*c(n-2)+...c(n-1)*c(2)。
+
+假设n个节点存在
+
+令G(n)的从1到n可以形成二叉排序树个数
+令f(i)为以i为根的二叉搜索树的个数
+即有:G(n) = f(1) + f(2) + f(3) + f(4) + ... + f(n)
+
+n为根节点，当i为根节点时，其左子树节点个数为[1,2,3,...,i-1]，右子树节点个数为[i+1,i+2,...n]，所以当i为根节点时，其左子树节点个数为i-1个，右子树节点为n-i，即f(i) = G(i-1)*G(n-i),
+
+上面两式可得:**G(n) = G(0)*G(n-1)+G(1)*(n-2)+...+G(n-1)*G(0)**
+
+即n个节点构成的二叉搜索树共有G(n)种，其中
+$$
+G(n)=\sum_{i\ =\ 0}^{n-1}{G(i)G(n-i-1)}
+$$
+
+```python
+class Solution:
+    def numTrees(self, n: int) -> int:
+        if n < 2:
+            return 1
+        dp = [1, 1] + [0] * (n - 1)
+        for i in range(2, n+1):
+            for j in range(i):
+                dp[i] += dp[j] * dp[i - 1 - j]
+        return dp[-1]
+
+
+def main():
+    n = 19
+    print(Solution().numTrees(n))
 
 
 if __name__ == '__main__':

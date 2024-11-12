@@ -15,7 +15,8 @@ class Solution:
         def dfs(l, r):
             if l > r:
                 return [None]
-            ans = []
+            ans = []  # 从l到r的搜索树集合
+            # 选子树的根节点
             for i in range(l, r + 1):
                 # 选一棵左子树
                 for x in dfs(l, i - 1):
@@ -32,8 +33,9 @@ class Solution:
 
 
 def main():
-    n = 3
+    n = 5
     ans = Solution().generateTrees(n)
+    print(len(ans))
     # for i in range(len(ans)):
     #     print('[', end='')
     #     for j in range(len(ans[i])):
@@ -41,7 +43,7 @@ def main():
     #     print(']')
     # for i in range(len(ans)):
     #     print(ans[i].val)
-    print(ans[2].left.val)
+    # print(ans[2].left.val)
 
 
 if __name__ == '__main__':
