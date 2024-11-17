@@ -861,3 +861,157 @@ if __name__ == '__main__':
 
 ```
 
+
+
+## [99. 恢复二叉搜索树](https://leetcode.cn/problems/recover-binary-search-tree/)
+
+思路：
+
+ - 记录最小值对应的节点`_min_node`和最大值对应的节点`_max_node`
+
+ - 递归判断当前节点是否满足`_min_node.val < _root.val < _max_node.val`，如果不满足，则根据情况交互节点的值
+
+ - 由于出现下列情况，虽然只是有两个节点的值错误，但是按本思路需要进行了两次值的交换
+
+   ![image-20241117165213687](./my_LeetCode.assets/image-20241117165213687.png)
+
+ - 每次交换完数值，都对整棵树进行判断，直到整棵树都满足二叉搜索树的要求
+
+
+
+```python
+# Definition for a binary tree node.
+from typing import Optional
+import math
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def recoverTree(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+
+        def dsf(_min_node: TreeNode, _max_node: TreeNode, _root: TreeNode):
+            if not _root:
+                return
+            if _min_node.val < _root.val < _max_node.val:
+                dsf(_min_node, _root, _root.left)  # 判断左子树
+                dsf(_root, _max_node, _root.right)  # 判断右子树
+            elif _min_node.val > _root.val:
+                tmp = _min_node.val
+                _min_node.val = _root.val
+                _root.val = tmp
+            elif _max_node.val < _root.val:
+                tmp = _max_node.val
+                _max_node.val = _root.val
+                _root.val = tmp
+
+        def judge(_min: int, _max: int, _root: TreeNode):
+            if not _root:
+                return TreeNode
+            return _min < _root.val < _max and judge(_min, _root.val, _root.left) and judge(_root.val, _max, _root.right)
+
+        min_node = TreeNode(-math.inf)
+        max_node = TreeNode(math.inf)
+        while not judge(min_node.val, max_node.val, root):
+            dsf(min_node, max_node, root)
+
+
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    if not level_order:
+        return None
+
+    root = TreeNode(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
+
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = TreeNode(level_order[index])
+            queue.append(node.left)
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = TreeNode(level_order[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# 打印树的层序遍历，验证结果
+from collections import deque
+
+
+def print_tree(root):
+    if not root:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end=" ")
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+def main():
+    # root = [1, 3, None, None, 2]
+    root = [2, 3, 1]
+    root = build_tree_from_level_order(root)
+    print_tree(root)
+    Solution().recoverTree(root)
+    print()
+    print_tree(root)
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+**题解**
+思路：
+
+ - 只需要记录当前节点的前驱结点`pre`即可
+ - 中序遍历每个节点，并将其与其前驱节点进行比较
+   - 当 当前节点的值比其前驱节点的值小时，该节点就是有问题的
+   - 找出两个有问题的节点，将他们的值进行交换
+
+```python
+class Solution:
+    def recoverTree(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        # 中序遍历
+        self.pre = None  # 记录前驱节点
+        self.x = None  # 记录第一个有问题的节点
+        self.y = None  # 记录第二个有问题的节点
+        
+
+        def dfs(node):
+            if not node:
+                return
+            dfs(node.left)
+            if self.pre and node.val < self.pre.val:
+                if not self.x:  # 记录第一个点
+                    self.x = self.pre
+                self.y = node  # 记录第二个点，第二个点需要一直更新
+            self.pre = node  # 更新前驱节点
+            dfs(node.right)
+
+        dfs(root)
+        self.x.val, self.y.val = self.y.val, self.x.val  # 交换值
+```
+
