@@ -1,5 +1,9 @@
 # 算法
 
+## 注意
+
+LeetCode 环境下，通常会对提交代码的运行环境进行封装，可能默认导入了一些常用的模块，比如 `math`。但本地环境中（如 PyCharm），这些模块需要你显式导入，否则会报 `NameError`。
+
 ## 动态规划
 
 https://leetcode.cn/problems/scramble-string/solutions/51990/miao-dong-de-qu-jian-xing-dpsi-lu-by-sha-yu-la-jia/
@@ -20,7 +24,7 @@ ans用于存储答案
 
 
 
-# path
+## [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
 
 ​    每一个‘高’对应一个列表，其中记录每一行连续1的个数作为‘宽’
 ​    取列表中最小的‘宽’与当前‘高’相乘作为‘面积’
@@ -645,6 +649,211 @@ class Solution:
 def main():
     n = 19
     print(Solution().numTrees(n))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+## [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)
+
+思路：
+
+- 找出左子树中最大的值 `lmax`和右子树中最小的值`rmin`
+- 确保`lmax < root.val <rmin`
+- 递归判断每个节点都符合要求
+
+```python
+from typing import Optional
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+
+        def find_min(r: Optional[TreeNode], _min: int) -> int:
+            if r is None:  # 遇到空节点，返回当前最小值
+                return _min
+            # 比较当前节点的值与当前最小值
+            if r.val < _min:
+                _min = r.val
+            # 递归查找左子树和右子树的最小值
+            _min = find_min(r.left, _min)
+            _min = find_min(r.right, _min)
+            return _min
+
+        def find_max(r: Optional[TreeNode], _max: float) -> float:
+            if r is None:  # 遇到空节点，返回当前最大值
+                return _max
+            # 比较当前节点的值与当前最小值
+            if r.val > _max:
+                _max = r.val
+            # 递归查找左子树和右子树的最小值
+            _max = find_max(r.left, _max)
+            _max = find_max(r.right, _max)
+            return _max
+
+        def dfs_lnr(r: Optional[TreeNode]):
+            if r.left:
+                if find_max(r.left, r.left.val) < r.val:
+                    if not dfs_lnr(r.left):
+                        return False
+                else:
+                    return False
+            if r.right:
+                if find_min(r.right, r.right.val) > r.val:
+                    if not dfs_lnr(r.right):
+                        return False
+                else:
+                    return False
+            return True
+
+        return dfs_lnr(root)
+
+
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    if not level_order:
+        return None
+
+    root = TreeNode(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
+
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = TreeNode(level_order[index])
+            queue.append(node.left)
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = TreeNode(level_order[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# 打印树的层序遍历，验证结果
+from collections import deque
+
+
+def print_tree(root):
+    if not root:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end=" ")
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+def main():
+    # root = [5, 4, 6, None, None, 3, 7]
+    # root = [26, 19, None, 27]
+    root = [32, 26, 47, 19, None, None, 56, None, 27]
+    root = build_tree_from_level_order(root)
+    # print_tree(root)
+    print(Solution().isValidBST(root))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+**题解**
+
+思路：
+
+	- 划分一个上下界`[_min, _max]`
+	- 各子树的取值范围要满足`_min < root.val < _max`
+	- 对`root`的左子树进行判断时，要满足`_min < root.left.val < root.val`
+	- 对`root`的右子树进行判断时，要满足`root.val < root.right.val < _max`
+	- 递归修改`_min`和`_max`的值，来控制`root`的所有左子树的值均小于`root.val`，`root`的所有右子树的值均大于`root.val`
+
+```python
+from typing import Optional
+import math
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode], _min=-math.inf, _max=math.inf) -> bool:
+        if not root:
+            return True
+        return _min < root.val < _max and self.isValidBST(root.left, _min, root.val) and self.isValidBST(root.right, root.val, _max)
+
+
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    if not level_order:
+        return None
+
+    root = TreeNode(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
+
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = TreeNode(level_order[index])
+            queue.append(node.left)
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = TreeNode(level_order[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# 打印树的层序遍历，验证结果
+from collections import deque
+
+
+def print_tree(root):
+    if not root:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end=" ")
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+def main():
+    # root = [5, 4, 6, None, None, 3, 7]
+    # root = [26, 19, None, 27]
+    root = [32, 26, 47, 19, None, None, 56, None, 27]
+    root = build_tree_from_level_order(root)
+    # print_tree(root)
+    print(Solution().isValidBST(root))
 
 
 if __name__ == '__main__':
