@@ -1263,3 +1263,114 @@ if __name__ == '__main__':
 
 ```
 
+
+
+## [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+思路：
+
+- `preorder`中位置靠前的节点都是对应子树的根节点
+- `inorder`中所有左子树的节点都在根节点的左边，右子树的节点都在根节点的右边
+- 根据`preorder`中元素确定每个子树的根节点，在`inorder`中将根节点的左子树列表和右子树列表找出来
+  - 在中序遍历的结果中找出根以及对应的左子树列表和右子树列表
+  - 处理左子树
+    - `_index = _left_list.index(preorder[i])  # preorder中位置靠前的一定是该子树的根`
+    - `_root.left = TreeNode(preorder[i])  # 当前节点左子树的根`
+    - `_left_list[: _index]  # 当前节点左子树的根对应的中序左子树列表`
+    - ` _left_list[_index + 1:]  # 当前节点左子树的根对应的中序右子树列表 `
+  - 处理右子树
+    - `_index = _right_list.index(preorder[i])  # preorder中位置靠前的一定是该子树的根`
+    - `_root.right = TreeNode(preorder[i])  # 当前节点右子树的根`
+    - `_right_list[: _index]  # 当前节点右子树的根对应的中序左子树列表`
+    - `_right_list[_index + 1:]  # 当前节点右子树的根对应的中序右子树列表`
+- 注意：在`preorder`中连续的n个数可能都是某个节点的左子树，在处理完该左子树之后，要正确找到第一个未被处理的右子树节点
+
+```python
+# Definition for a binary tree node.
+from typing import Optional, List
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        # if len(preorder) == 0:
+        #     return []
+        root = TreeNode(preorder[0])
+
+        def dfs(_left_list: List[int], _right_list: List[int], _root: TreeNode, i: int):
+            # 处理左子树
+            if len(_left_list) > 0:
+                _index = _left_list.index(preorder[i])  # preorder中位置靠前的一定是该子树的根
+                _root.left = TreeNode(preorder[i])
+                dfs(_left_list[: _index], _left_list[_index + 1:], _root.left, i + 1)
+            else:
+                _root.left = None
+
+            # 处理右子树
+            if len(_right_list) > 0:
+                # 找出 preorder 中第一个未被处理的右子树节点
+                while preorder[i] not in _right_list:
+                    i += 1
+                _index = _right_list.index(preorder[i])  # preorder中位置靠前的一定是该子树的根
+                _root.right = TreeNode(preorder[i])
+                dfs(_right_list[: _index], _right_list[_index + 1:], _root.right, i + 1)
+            else:
+                _root.right = None
+
+        index = inorder.index(preorder[0])
+        # 对中序遍历结果进行进一步划分
+        left_list = inorder[: index]
+        right_list = inorder[index + 1:]
+        dfs(left_list, right_list, root, 1)
+        return root
+
+
+# 打印树的层序遍历，验证结果
+from collections import deque
+
+
+def print_tree(root):
+    if not root:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end=" ")
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+def main():
+    # preorder = [3, 9, 20, 15, 7]
+    # inorder = [9, 3, 15, 20, 7]
+    # preorder = [-1]
+    # inorder = [-1]
+    # preorder = [1, 2]
+    # inorder = [1, 2]
+    preorder = [3, 1, 2, 4]
+    inorder = [1, 2, 3, 4]
+    root = Solution().buildTree(preorder, inorder)
+    print_tree(root)
+    # Solution().recoverTree(root)
+    # print_tree(root)
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+
+
+# The END
+
