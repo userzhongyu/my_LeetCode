@@ -1479,17 +1479,10 @@ if __name__ == '__main__':
   - 将`tree_list[index+1 :]`作为右子树
 
 ```python
-# Definition for singly-linked list.
-from typing import Optional
-
-
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-
 # Definition for a binary tree node.
+from typing import Optional, List
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -1498,85 +1491,148 @@ class TreeNode:
 
 
 class Solution:
-    def sortedListToBST(self, head: Optional[ListNode]) -> Optional[TreeNode]:
-        if not head:
-            return None
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> List[List[int]]:
+        ans = []
 
-        def dfs(_root: TreeNode, _left_list: list, _right_list: list):
-            if len(_left_list) == 0:
-                _root.left = None
+        def dfs(_root: Optional[TreeNode], _path: list, _sum: int):
+            if not _root:
+                return
+            elif _sum + _root.val == targetSum and not _root.left and not _root.right:
+                _path.append(_root.val)
+                ans.append(_path[:])
+                _path.pop()  # 恢复现场
                 return
             else:
-                _index = len(_left_list) // 2
-                _root.left = _left_list[_index]
-                dfs(_root.left, _left_list[: _index], _left_list[_index + 1:])
-            if len(_right_list) == 0:
-                _root.right = None
-                return
-            else:
-                _index = len(_right_list) // 2
-                _root.right = _right_list[_index]
-                dfs(_root.right, _right_list[: _index], _right_list[_index + 1:])
+                _path.append(_root.val)
+                _sum += _root.val
+                dfs(_root.left, _path, _sum)
+                dfs(_root.right, _path, _sum)
+                _path.pop()  # 恢复现场
 
-        tree_list = []
-        p = head
-        while p:
-            tree_list.append(TreeNode(p.val))
-            p = p.next
-
-        index = len(tree_list) // 2
-        root = tree_list[index]
-        left_list = tree_list[: index]
-        right_list = tree_list[index + 1:]
-        dfs(root, left_list, right_list)
-
-        return root
+        dfs(root, [], 0)
+        return ans
 
 
-# 将输入的形如“[1,2,3,4,5]”的字符串转换成链表
-def create_ListNode():
-    lst = list(input("list:")[1:-1].split(','))
-    if lst == '[]':
-        return ListNode()
-    lst = [int(i) for i in lst]
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    if not level_order:
+        return None
 
-    n = len(lst)
+    root = TreeNode(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
 
-    # 头节点为空
-    # head = ListNode()
-    # tmp = ListNode(val=lst[0]
-    # head.next = tmp
-
-    # 头节点存数据
-    head = tmp = ListNode(val=lst[0])
-    for i in range(1, n):
-        new = ListNode(val=lst[i])
-        tmp.next = new
-        tmp = tmp.next
-    return head
-
-
-# 打印树的层序遍历，验证结果
-from collections import deque
-
-
-def print_tree(root):
-    if not root:
-        return
-    queue = deque([root])
-    while queue:
-        node = queue.popleft()
-        print(node.val, end=" ")
-        if node.left:
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = TreeNode(level_order[index])
             queue.append(node.left)
-        if node.right:
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = TreeNode(level_order[index])
             queue.append(node.right)
+        index += 1
+    return root
 
 
 def main():
-    head = create_ListNode()
-    root = Solution().sortedListToBST(head)
-    print_tree(root)
+    # root = [5, 4, 8, 11, None, 13, 4, 7, 2, None, None, 5, 1]
+    # targetSum = 22
+    # root = [1, 2, 3]
+    # targetSum = 5
+    root = [-2, None, -3]
+    targetSum = -5
+    root = build_tree_from_level_order(root)
+    print(Solution().pathSum(root, targetSum))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+
+
+## [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
+
+思路：
+
+- 前序遍历
+  - 判断加入当前节点的值以后是否满足路径和
+  - 数值相等后，再判断当前节点是否为叶子结点
+- 每一次对`_path`进行修改后，一定要在对应的位置**恢复现场**
+- 由于路径和存在负数值，所以不能用`if not _root or _sum + _root.val > targetSum: return`进行剪枝
+
+```python
+# Definition for a binary tree node.
+from typing import Optional, List
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> List[List[int]]:
+        ans = []
+
+        def dfs(_root: Optional[TreeNode], _path: list, _sum: int):
+            if not _root:
+                return
+            elif _sum + _root.val == targetSum and not _root.left and not _root.right:
+                _path.append(_root.val)
+                ans.append(_path[:])
+                _path.pop()
+                return
+            else:
+                _path.append(_root.val)
+                _sum += _root.val
+                dfs(_root.left, _path, _sum)
+                dfs(_root.right, _path, _sum)
+                _path.pop()
+
+        dfs(root, [], 0)
+        return ans
+
+
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    if not level_order:
+        return None
+
+    root = TreeNode(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
+
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = TreeNode(level_order[index])
+            queue.append(node.left)
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = TreeNode(level_order[index])
+            queue.append(node.right)
+        index += 1
+    return root
+
+
+def main():
+    # root = [5, 4, 8, 11, None, 13, 4, 7, 2, None, None, 5, 1]
+    # targetSum = 22
+    # root = [1, 2, 3]
+    # targetSum = 5
+    root = [-2, None, -3]
+    targetSum = -5
+    root = build_tree_from_level_order(root)
+    print(Solution().pathSum(root, targetSum))
 
 
 if __name__ == '__main__':
