@@ -1763,5 +1763,66 @@ if __name__ == '__main__':
 
 
 
+
+
+## [115. 不同的子序列](https://leetcode.cn/problems/distinct-subsequences/)
+
+思路：
+
+- 下标 i 对应子串 s 的索引 
+- 下标 j 对应子串 t 的索引
+- 递推公式为：
+  - `if s[i - 1] == t[j - 1] and j == 1: dp[i][j] = dp[i - 1][j] + 1`
+  - `if s[i - 1] == t[j - 1] and j != 1: dp[i][j] = dp[i - 1][j-1] + dp[i - 1][j]` 
+  - `if s[i - 1] != t[j - 1]: dp[i][j] = dp[i - 1][j-1]`
+
+![3fd3f9d3ad8b52d8c428b6ee7217bdd](./my_LeetCode.assets/3fd3f9d3ad8b52d8c428b6ee7217bdd.jpg)
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        lens = len(s)
+        lent = len(t)
+
+        dp = [[0] * (lent + 1) for _ in range(lens + 1)]
+
+        # 遍历 dp 数组
+        for i in range(1, lens + 1):
+            for j in range(1, lent + 1):
+                if s[i - 1] == t[j - 1]:
+                    if j == 1:
+                        dp[i][j] = dp[i-1][j] + 1
+                    else:
+                        dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j]
+                else:
+                    dp[i][j] = dp[i - 1][j]
+
+        return dp[-1][-1]
+
+
+def main():
+    s = "babgbag"
+    t = "bag"
+    # s = "rabbbit"
+    # t = "rabbit"
+    # s = "a"
+    # t = "b"
+    print(Solution().numDistinct(s, t))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+
+
 # The END
 
