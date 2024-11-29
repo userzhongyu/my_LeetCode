@@ -24,7 +24,9 @@ ans用于存储答案
 
 
 
-## [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
+## 50-100
+
+### [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
 
 ​    每一个‘高’对应一个列表，其中记录每一行连续1的个数作为‘宽’
 ​    取列表中最小的‘宽’与当前‘高’相乘作为‘面积’
@@ -66,7 +68,7 @@ def maximalRectangle(self, matrix: List[List[str]]) -> int:
 
 
 
-## [86. 分隔链表](https://leetcode.cn/problems/partition-list/)(链表创建代码)
+### [86. 分隔链表](https://leetcode.cn/problems/partition-list/)(链表创建代码)
 
 ```python
    	# 将输入的形如“[1,2,3,4,5]”的字符串转换成链表
@@ -95,7 +97,7 @@ def maximalRectangle(self, matrix: List[List[str]]) -> int:
 
 
 
-## [87. 扰乱字符串](https://leetcode.cn/problems/scramble-string/)
+### [87. 扰乱字符串](https://leetcode.cn/problems/scramble-string/)
 
 ### 动态规划
 
@@ -209,7 +211,7 @@ if __name__ == '__main__':
 
 
 
-### 递归
+#### 递归
 
 ![87_3](./my_LeetCode.assets/87_3.jpg)
 
@@ -270,7 +272,7 @@ if __name__ == '__main__':
 
 
 
-##  [89. 格雷编码](https://leetcode.cn/problems/gray-code/)
+###  [89. 格雷编码](https://leetcode.cn/problems/gray-code/)
 
 存在问题：无法正确跳出递归。从path去除的数字放入con后，会再次放入path的相同位置，导致死循环
 
@@ -317,7 +319,7 @@ if __name__ == '__main__':
 
 ```
 
-### 动态规划
+#### 动态规划
 
 https://leetcode.cn/problems/gray-code/solutions/9730/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--12/
 
@@ -390,7 +392,7 @@ if __name__ == '__main__':
 
 ```
 
-## [90. 子集 II](https://leetcode.cn/problems/subsets-ii/)
+### [90. 子集 II](https://leetcode.cn/problems/subsets-ii/)
 
 ### 超时
 
@@ -486,7 +488,7 @@ if __name__ == '__main__':
 
 
 
-## [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
+### [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
 
 https://leetcode.cn/problems/restore-ip-addresses/solutions/100433/hui-su-suan-fa-hua-tu-fen-xi-jian-zhi-tiao-jian-by/
 
@@ -553,7 +555,7 @@ if __name__ == '__main__':
 
 
 
-## [95. 不同的二叉搜索树 II](https://leetcode.cn/problems/unique-binary-search-trees-ii/)
+### [95. 不同的二叉搜索树 II](https://leetcode.cn/problems/unique-binary-search-trees-ii/)
 
 ```python
 # Definition for a binary tree node.
@@ -611,7 +613,7 @@ if __name__ == '__main__':
 
 
 
-## [96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)
+### [96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)
 
 可以直接用95题的思路，求出`ans[]`后返回`len(ans)`，但是提交时，超时了
 
@@ -658,7 +660,7 @@ if __name__ == '__main__':
 
 
 
-## [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)
+### [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)
 
 思路：
 
@@ -863,7 +865,7 @@ if __name__ == '__main__':
 
 
 
-## [99. 恢复二叉搜索树](https://leetcode.cn/problems/recover-binary-search-tree/)
+### [99. 恢复二叉搜索树](https://leetcode.cn/problems/recover-binary-search-tree/)
 
 思路：
 
@@ -1017,7 +1019,9 @@ class Solution:
 
 
 
-## [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
+## 101-150
+
+### [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
 
 思路：
 
@@ -1135,7 +1139,7 @@ if __name__ == '__main__':
 
 
 
-## [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)
+### [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)
 
 思路：
 
@@ -1265,7 +1269,7 @@ if __name__ == '__main__':
 
 
 
-## [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+### [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
 
 思路：
 
@@ -1369,7 +1373,7 @@ if __name__ == '__main__':
 
 
 
-## [106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+### [106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 思路：
 
@@ -1457,7 +1461,7 @@ if __name__ == '__main__':
 
 
 
-## [107. 二叉树的层序遍历 II](https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/)
+### [107. 二叉树的层序遍历 II](https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/)
 
 思路：
 
@@ -1467,7 +1471,7 @@ if __name__ == '__main__':
 
 
 
-## [109. 有序链表转换二叉搜索树](https://leetcode.cn/problems/convert-sorted-list-to-binary-search-tree/)
+### [109. 有序链表转换二叉搜索树](https://leetcode.cn/problems/convert-sorted-list-to-binary-search-tree/)
 
 思路：
 
@@ -1556,7 +1560,7 @@ if __name__ == '__main__':
 
 
 
-## [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
+### [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
 
 思路：
 
@@ -1644,7 +1648,7 @@ if __name__ == '__main__':
 
 
 
-## [114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/)
+### [114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/)
 
 思路：
 
@@ -1765,7 +1769,7 @@ if __name__ == '__main__':
 
 
 
-## [115. 不同的子序列](https://leetcode.cn/problems/distinct-subsequences/)
+### [115. 不同的子序列](https://leetcode.cn/problems/distinct-subsequences/)
 
 思路：
 
@@ -1821,6 +1825,111 @@ if __name__ == '__main__':
 ```
 
 
+
+### [116. 填充每个节点的下一个右侧节点指针](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/)
+
+思路：
+
+- 由于二叉树为完美二叉树，所以第`i`层有 $2^{(i - 1)}$ 个节点
+
+- 层序遍历完美二叉树，结果保存到数组`queue`中
+- 利用完美二叉树的性质，按照高度对`queue`分区
+
+```python
+# Definition for a Node.
+from typing import Optional
+import math
+
+
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+
+
+class Solution:
+    def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
+        # 当 root == None时，len(queue) == 1，报错 AttributeError: 'NoneType' object has no attribute 'left'
+        if not root:
+            return None
+        queue = [root]
+        i = 0
+        # 层序遍历
+        while i < len(queue):
+            node = queue[i]
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+            i += 1
+
+        # 按照高度进行分区
+        h = int(math.log2(len(queue) + 1))
+        for i in range(h):
+            for j in range(2 ** i):
+                # 判断是否为本层最后一个节点
+                if j + 1 < 2 ** i:
+                    queue[j + 2 ** i - 1].next = queue[j + 2 ** i - 1 + 1]
+                else:
+                    queue[j + 2 ** i - 1].next = None
+
+        return root
+
+
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    # if not level_order:
+    #     return None
+
+    root = Node(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
+
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = Node(level_order[index])
+            queue.append(node.left)
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = Node(level_order[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# 打印树的层序遍历，验证结果
+from collections import deque
+
+
+def print_tree(root):
+    if not root:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end=" ")
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+def main():
+    # root = [1, 2, 3, 4, 5, 6, 7]
+    root = []
+    # root = build_tree_from_level_order(root)
+    print(Solution().connect(None))
+
+
+if __name__ == '__main__':
+    main()
+
+```
 
 
 
