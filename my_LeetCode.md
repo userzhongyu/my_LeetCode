@@ -2147,5 +2147,90 @@ if __name__ == '__main__':
 
 
 
+## [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
+
+思路：
+
+- 深度优先搜索
+
+```python
+import copy
+import math
+from typing import List
+
+
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+
+        def dfs(i: int, j: int, temp: int, min_sum):
+            # 计算到最底层时，返回结果
+            if i == len(triangle):
+                return temp
+            for k in range(j, min(j + 2, len(triangle[i]))):
+                temp += triangle[i][k]
+                # 比较路径和
+                min_sum = min(min_sum, dfs(i + 1, k, temp, min_sum))
+                temp -= triangle[i][k]
+
+            # 将本次计算结果返回
+            return min_sum
+
+        return dfs(0, 0, 0, math.inf)
+
+
+def main():
+    triangle = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
+    print(Solution().minimumTotal(triangle))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+思路：
+
+- 动态规划
+- `dp[i][j]`表示加上`triangle[i-1][j-1]`后的路径最小值
+
+![13f8dd0ddcab03641c9a603e23c4e7e](./my_LeetCode.assets/13f8dd0ddcab03641c9a603e23c4e7e.jpg)
+
+
+
+```python
+import copy
+import math
+from typing import List
+
+
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        n = len(triangle[-1]) + 1
+        dp = [[math.inf] * n for _ in range(n)]
+        dp[0][0] = 0
+        for i in range(1, n):
+            for j in range(1, n):
+                if j - 1 < len(triangle[i - 1]):
+                    dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j]) + triangle[i - 1][j - 1]
+        # print(dp)
+        return min(dp[-1][:])
+
+
+def main():
+    # triangle = [[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]
+    triangle = [[-1]]
+    print(Solution().minimumTotal(triangle))
+
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
 # The END
 
