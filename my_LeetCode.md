@@ -2232,5 +2232,121 @@ if __name__ == '__main__':
 
 
 
+### [122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/)
+
+https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/solutions/12625/best-time-to-buy-and-sell-stock-ii-zhuan-hua-fa-ji/
+
+思路：
+
+- 贪心
+
+  - 相当于每天都买卖
+
+  - 计算相邻两天的收益
+
+    1° 收益为正，则计入总收益；
+
+    2° 收益为负，则不操作
+
+- 获得所有收益，不承认亏损
+
+```python
+from typing import List
+
+
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        profit = 0
+
+        for i in range(1, n):
+            inc = prices[i] - prices[i - 1]
+            if inc > 0:
+                profit += inc
+
+        return profit
+
+
+
+def main():
+    prices = [7, 1, 5, 3, 6, 4]
+    # prices =[1, 2, 3, 4, 5]
+    print(Solution().maxProfit(prices))
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+```
+
+
+
+https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/solutions/38498/tan-xin-suan-fa-by-liweiwei1419-2/
+
+思路：
+
+- 动态规划
+
+- i：第 i 天的收益
+
+- j：是否持有股票 取值为0/1
+
+- `dp[i][j]`：第 i 天，对股票状态为 j 时的最佳收益
+
+- j == 0，表示当天没有持股票
+
+  ​	1° 当天不操作 -- > 前一天也没有买入 --> 前一天没有持股票的最好收益
+
+  ​	2° 当天操作 --> 当天卖出 --> 当天的股票价格 + 前一天持有股票时的最好收益
+
+  取上述两种情况的最大值，` dp[i][0] = max(dp[i - 1][0], prices[i] + dp[i - 1][1])`
+
+- j == 1，表示当天持有股票
+
+  ​	1° 当天不操作 -- > 前一天也持有股票 --> 前一天持有股票的最佳收益
+
+  ​	2° 当天操作 --> 当天买入 --> 前一天没有持股票的最佳收益 - 当天的股票价格
+
+  取上述两种情况的最大值，`dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])`
+
+```python
+from typing import List
+
+
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+
+        dp = [[0] * 2 for _ in range(n)]
+
+        dp[0][1] = -prices[0]
+
+        for i in range(1, n):
+            dp[i][0] = max(dp[i - 1][0], prices[i] + dp[i - 1][1])
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+
+        return dp[n - 1][0]
+
+
+
+def main():
+    prices = [7, 1, 5, 3, 6, 4]
+    # prices =[1, 2, 3, 4, 5]
+    print(Solution().maxProfit(prices))
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+```
+
+
+
+
+
 # The END
 
