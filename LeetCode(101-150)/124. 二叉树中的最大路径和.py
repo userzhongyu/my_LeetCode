@@ -14,18 +14,18 @@ class Solution:
     def maxPathSum(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
-        self.maxSum = root.val
+        maxSum = [root.val]  # 使用一个列表，方便在 dfs 中修改
 
         def dfs(_root: TreeNode):
             if not _root:
                 return 0
             leftSum = max(0, dfs(_root.left))  # 计算左子树的最大路径和，负值则直接舍弃
             rightSum = max(0, dfs(_root.right))  # 计算右子树的最大路径和，负值则直接舍弃
-            self.maxSum = max(self.maxSum, leftSum + rightSum + _root.val)  # 判断最大路径和是否可以从子树中取得，直接影响 maxPathSum 函数的 self.maxSum
+            maxSum[0] = max(maxSum[0], leftSum + rightSum + _root.val)  # 判断最大路径和是否可以从子树中取得，直接影响 maxPathSum 函数的 self.maxSum
             return _root.val + max(leftSum, rightSum)  # 递归选择的前提下，每次只能选择当前节点值与一边子树路径的和
 
         dfs(root)
-        return self.maxSum
+        return maxSum[0]
 
 
 # 层序遍历构建二叉树
