@@ -2422,5 +2422,109 @@ if __name__ == '__main__':
 
 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/solutions/2466578/python3javacgorust-yi-ti-yi-jie-dong-tai-43c1/
 
+
+
+### [124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
+
+https://leetcode.cn/problems/binary-tree-maximum-path-sum/solutions/297276/shou-hui-tu-jie-hen-you-ya-de-yi-dao-dfsti-by-hyj8/
+
+思路：
+
+- `leftSum`记录当前节点左子树的路径和
+- `rightSum`记录当前节点右子树的路径和
+
+- 最大路径和可能从两个地方产生
+
+  1.当前节点的内部 --> 包含左、右子树路径和+当前节点值 -->`leftSum + rightSum + _root.val`
+
+  2.当前节点的外部 --> 只包含一边子树路径和+当前节点值 --> `_root.val + max(leftSum, rightSum)`
+
+  每次递归只返回第二种情况，因为第一种情况不能添加到路径中（从`root.parent`不能在不重复访问的前提下，遍历`root.left`和`root.left`），第一种情况路径和较大时，直接修改最终需要返回的答案
+
+```python
+# Definition for a binary tree node.
+import math
+from typing import Optional
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        self.maxSum = root.val
+
+        def dfs(_root: TreeNode):
+            if not _root:
+                return 0
+            leftSum = max(0, dfs(_root.left))  # 计算左子树的最大路径和，负值则直接舍弃
+            rightSum = max(0, dfs(_root.right))  # 计算右子树的最大路径和，负值则直接舍弃
+            self.maxSum = max(self.maxSum, leftSum + rightSum + _root.val)  # 判断最大路径和是否可以从子树中取得，直接影响 maxPathSum 函数的 self.maxSum
+            return _root.val + max(leftSum, rightSum)  # 递归选择的前提下，每次只能选择当前节点值与一边子树路径的和
+
+        dfs(root)
+        return self.maxSum
+
+
+# 层序遍历构建二叉树
+def build_tree_from_level_order(level_order):
+    if not level_order:
+        return None
+
+    root = TreeNode(level_order[0])  # 创建根节点
+    queue = [root]
+    index = 1
+
+    while index < len(level_order):
+        node = queue.pop(0)  # 取出当前节点
+        if level_order[index] is not None:  # 如果左子节点存在
+            node.left = TreeNode(level_order[index])
+            queue.append(node.left)
+        index += 1
+
+        if index < len(level_order) and level_order[index] is not None:  # 如果右子节点存在
+            node.right = TreeNode(level_order[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# 打印树的层序遍历，验证结果
+from collections import deque
+
+
+def print_tree(root):
+    if not root:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end=" ")
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+
+def main():
+    root = [-10, 9, 20, None, None, 15, 7]
+    root = build_tree_from_level_order(root)
+    print(Solution().maxPathSum(root))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
 # The END
 
