@@ -2723,6 +2723,93 @@ if __name__ == '__main__':
 
 
 
+### [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)
+
+https://leetcode.cn/problems/longest-consecutive-sequence/solutions/276931/zui-chang-lian-xu-xu-lie-by-leetcode-solution/
+
+思路：
+
+- 用哈希表查找`left`前面一个数是否存在，即`left-1`在序列中是否存在。存在那这个数肯定不是开头，直接跳过。
+
+- 因此只需要对每个开头的数进行循环，直到这个序列不再连续，因此复杂度是O(n)。 以题解中的序列举例:
+  **[100，4，200，1，3，4，2]**
+  去重后的哈希序列为：
+  **[100，4，200，1，3，2]**
+  按照上面逻辑进行判断：
+
+  1. 元素100是开头,因为没有99，且以100开头的序列长度为1
+
+  2. 元素4不是开头，因为有3存在，过，
+
+  3. 元素200是开头，因为没有199，且以200开头的序列长度为1
+
+  4. 元素1是开头，因为没有0，且以1开头的序列长度为4，因为依次累加，2，3，4都存在。
+
+  5. 元素3不是开头，因为2存在，过，
+
+  6. 元素2不是开头，因为1存在，过。
+     完
+
+注意：由于当`left-1`存在时，不判断`left+1`是否存在，所以每个数只有可能被读取3遍
+
+​	1.该数为当前操作数`left`
+
+​	2.由该数前面的数连续扫描至该数，该数为`left+x`，此时为O(n)
+
+​	3.该数为`left-1`这里并不会再次读取`left-2`，此时为O(1)
+
+并不会出现O(n^2)的情况
+
+
+
+**知识点：**在 Python 中，集合（`set`）底层是通过 **哈希表（hash table）** 实现的。哈希表是一种基于哈希函数的数据结构，能够在 **平均情况下** 实现常数时间复杂度 O(1)的**查找**操作。
+
+ **为什么是平均 O(1)**
+
+- 哈希函数通常能够将元素均匀地分布到哈希表中，避免冲突。
+- 当哈希表的 **负载因子（load factor）** 较低时（即哈希表的元素数量相对于桶数量较少），冲突的概率很低，因此查找时间接近 O(1)O(1)O(1)。
+
+注意：
+
+- 当负载因子过高时（例如哈希表过满），会增加冲突的概率，查找时间可能退化到 O(n)O(n)O(n)。为避免这种情况，Python 的 `set` 会动态调整桶的数量（重新哈希）。
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        maxl = 0
+        setnums = set(nums)
+
+        for left in setnums:
+            if left - 1 in setnums:
+                continue  # 当前操作数不能作为一组连续序列的开头
+            right = left + 1
+            # 判断以当前操作数为开头的序列有多长
+            while right in setnums:
+                right += 1
+            maxl = max(maxl, right - left)  # 由于是序列连续，所以可以直接通过 right - left 得出序列长度
+
+        return maxl
+
+
+def main():
+    # nums = [100, 4, 200, 1, 3, 2]
+    nums = [1, 0, -1]
+    # nums = [0, -1]
+    print(Solution().longestConsecutive(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
 
 
 # The END
