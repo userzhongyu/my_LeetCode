@@ -20,7 +20,29 @@ https://leetcode.cn/problems/scramble-string/solutions/51990/miao-dong-de-qu-jia
 
 path用于存储路径
 
-ans用于存储答案
+res用于存储答案
+
+递归模版
+
+https://leetcode.cn/problems/palindrome-partitioning/solutions/640028/hui-su-fa-si-lu-yu-mo-ban-by-fuxuemingzh-azhz/
+
+```python
+res = []
+path = []
+
+def backtrack(未探索区域, res, path):
+    if 未探索区域满足结束条件:
+        res.add(path) # 深度拷贝
+        return
+    for 选择 in 未探索区域当前可能的选择:
+        if 当前选择符合要求:
+            path.add(当前选择)
+            backtrack(新的未探索区域, res, path)
+            path.pop()
+
+```
+
+
 
 
 
@@ -2995,6 +3017,72 @@ if __name__ == '__main__':
     main()
 
 ```
+
+
+
+### [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
+
+https://leetcode.cn/problems/palindrome-partitioning/solutions/640028/hui-su-fa-si-lu-yu-mo-ban-by-fuxuemingzh-azhz/
+
+思路：
+
+- 递归
+- 将未检查的子串分为两段
+  - 检查前一段，如果是回文，则递归检查后一段
+  - 循环增加前一段的长度
+
+```python
+from typing import List
+
+
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        ans = []
+        def judge(_s):
+            return _s == _s[:: -1]
+
+        def dfs(path, _s):
+            if not _s:
+                ans.append(path)
+                return
+            for left in range(1, len(_s) + 1):
+                if judge(_s[:left]):
+                    dfs(path + [_s[:left]], _s[left:])
+
+        dfs([], s)
+        return ans
+#
+# class Solution(object):
+#     def partition(self, s):
+#         self.isPalindrome = lambda s: s == s[::-1]
+#         res = []
+#         self.backtrack(s, res, [])
+#         return res
+#
+#     def backtrack(self, s, res, path):
+#         if not s:
+#             res.append(path)
+#             return
+#         for i in range(1, len(s) + 1):  # 注意起始和结束位置
+#             if self.isPalindrome(s[:i]):
+#                 self.backtrack(s[i:], res, path + [s[:i]])
+
+
+def main():
+    s = "aab"
+    # s = "a"
+    # s = "bb"
+    print(Solution().partition(s))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+
 
 
 
