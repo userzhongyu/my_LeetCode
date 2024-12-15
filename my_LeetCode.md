@@ -3082,6 +3082,138 @@ if __name__ == '__main__':
 
 
 
+### [132. 分割回文串 II](https://leetcode.cn/problems/palindrome-partitioning-ii/)
+
+思路：
+
+- 使用131的方式进行回文子串划分
+- 剪枝：
+  - 记录一个最小划分次数`res`
+  - 每一次划分，如果超出`res`，则停止划分，并跳出递归
+- 返回最终的`res`
+
+**超时**
+
+```python
+class Solution:
+    def minCut(self, s: str) -> int:
+        res = [len(s), ]
+        path = []
+        self.backtrack(path, res, s)
+        # ans = len(res[0])
+        # for item in res:
+        #     ans = len(item) if len(item) < ans else ans
+        return res[0] - 1
+
+    def isPalindrome(self, s: str):
+        return s == s[::-1]
+
+    def backtrack(self, path: list, res: list, s: str):
+        if not s:
+            res[0] = len(path)
+            return
+        for i in range(1, len(s) + 1):
+            if self.isPalindrome(s[:i]):
+                if len(path) + 1 < res[0]:
+                    self.backtrack(path + [s[:i]], res, s[i:])
+                else:
+                    return
+
+
+def main():
+    # s = "aab"
+    # s = "a"
+    # s = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    #     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    s = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    print(Solution().minCut(s))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+https://leetcode.cn/problems/palindrome-partitioning-ii/solutions/641927/xiang-jie-liang-bian-dong-tai-gui-hua-ji-s5xr/
+
+思路：
+
+- 先记录字符串中存在的子回文串`s[l~r]`
+- 在判断`s[0~r]`的分割数
+  - `s[0~r]`为回文，则分割次数为0
+  - `s[0~r]`不为回文
+    - `s[l~r]`是回文，则分割次数 = `s[0~l]`+1
+    - `s[0~r]`中不包含任何回文子串，则分割次数 = `s[0~r]`所包含的字符数-1
+    - 取上述最小值，其中`l`取值范围为 0~r
+
+```python
+class Solution:
+    def minCut(self, s: str) -> int:
+        n = len(s)
+        dp = [[False] * n for _ in range(n)]
+
+        # 判断 s[l~r] 左闭右闭，是否为回文
+        for r in range(n):
+            for l in range(r, -1, -1):
+                # s[l~r] 只包含一个字符
+                if l == r:
+                    dp[l][r] = True
+                # s[l~r] 不止包含一个字符，在s[l] == s[r] 的前提下，
+                # 1. s[l~r] 只包含2个字符
+                # 2. s[l~r] 不止只包含2个字符，根据 s[l+1~r-1] 来判断 s[l~r] 是否为回文
+                elif s[l] == s[r]:
+                    if r - l == 1 or dp[l + 1][r - 1]:
+                        dp[l][r] = True
+        # res[r] 表示 s[0~r] 的最小分割次数
+        res = [0] * n
+        for r in range(n):
+            # s[0~r] 为回文，不需要分割
+            if dp[0][r]:
+                res[r] = 0
+            else:
+                # s[0~r] 不为回文，最大分割次数为 s[0~r] 所包含字符数 -1，此时， s[0~r] 中不包含回文子串
+                res[r] = r
+                # 考虑  s[0~r] 中包含回文子串 s[l~r]，此时的分割次数为 s[0~l-1] 的次数+1（s[l~r]只需要额外多1次）
+                for l in range(0, r + 1):
+                    if dp[l][r]:
+                        res[r] = min(res[r], res[l - 1] + 1)
+        return res[-1]
+
+
+def main():
+    # s = "aab"
+    # s = "a"
+    s = "fifgbeajcacehiicccfecbfhhgfiiecdcjjffbghdidbhbdbfbfjccgbbdcjheccfbhafehieabbdfeigbiaggchaeghaijfbjhi"
+    # s = "dcbabce"
+    # s = "abc"
+    print(Solution().minCut(s))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
 
 
 
