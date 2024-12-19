@@ -135,7 +135,7 @@ https://leetcode.cn/problems/scramble-string/solutions/51990/miao-dong-de-qu-jia
 
 **实践**
 
-![image-20241104165028001](./my_LeetCode.assets/image-20241104165028001.png)
+<img src="./my_LeetCode.assets/image-20241104165028001.png" alt="image-20241104165028001" style="zoom:100%;" />
 
 ​	1.确定下标意义
 
@@ -147,7 +147,7 @@ https://leetcode.cn/problems/scramble-string/solutions/51990/miao-dong-de-qu-jia
 
 ​	2.推导递推公式
 
-![87a4f7ce752f6f399929e9510c25444](./my_LeetCode.assets/87a4f7ce752f6f399929e9510c25444.jpg)
+<img src="./my_LeetCode.assets/87a4f7ce752f6f399929e9510c25444.jpg" alt="87a4f7ce752f6f399929e9510c25444" style="zoom:50%;" />
 
 ​	3.将dp初始化为 i\*i\*l ，值均为"False"的矩阵 （取s1:'abc'，s2:'cab')
 
@@ -161,7 +161,7 @@ dp = [[[False]*(4) for _ in range(3)] for _ in range(3)]  # 这是3*3*4的矩阵
 
 
 
-![image-20241104161719090](./my_LeetCode.assets/image-20241104161719090.png)
+<img src="./my_LeetCode.assets/image-20241104161719090.png" alt="image-20241104161719090" style="zoom:50%;" />
 
 
 
@@ -1684,7 +1684,7 @@ if __name__ == '__main__':
 
 注意：由于要满足先序遍历的顺序，从上至下遍历节点的话，只能现将树变成只有左子结点的树
 
-![53c3ef410f84e725fbe9d4dc5e0672f](./my_LeetCode.assets/53c3ef410f84e725fbe9d4dc5e0672f.jpg)
+<img src="./my_LeetCode.assets/53c3ef410f84e725fbe9d4dc5e0672f.jpg" alt="53c3ef410f84e725fbe9d4dc5e0672f" style="zoom:50%;" />
 
 
 
@@ -1802,7 +1802,7 @@ if __name__ == '__main__':
   - `if s[i - 1] == t[j - 1] and j != 1: dp[i][j] = dp[i - 1][j-1] + dp[i - 1][j]` 
   - `if s[i - 1] != t[j - 1]: dp[i][j] = dp[i - 1][j-1]`
 
-![3fd3f9d3ad8b52d8c428b6ee7217bdd](./my_LeetCode.assets/3fd3f9d3ad8b52d8c428b6ee7217bdd.jpg)
+<img src="./my_LeetCode.assets/3fd3f9d3ad8b52d8c428b6ee7217bdd.jpg" alt="3fd3f9d3ad8b52d8c428b6ee7217bdd" style="zoom:40%;" />
 
 
 
@@ -2217,7 +2217,7 @@ if __name__ == '__main__':
 - 动态规划
 - `dp[i][j]`表示加上`triangle[i-1][j-1]`后的路径最小值
 
-![13f8dd0ddcab03641c9a603e23c4e7e](./my_LeetCode.assets/13f8dd0ddcab03641c9a603e23c4e7e.jpg)
+<img alt="13f8dd0ddcab03641c9a603e23c4e7e"src="./my_LeetCode.assets/13f8dd0ddcab03641c9a603e23c4e7e.jpg" style="zoom:50%;" />
 
 
 
@@ -3332,6 +3332,111 @@ if __name__ == "__main__":
 ```
 
 
+
+
+
+### [134. 加油站](https://leetcode.cn/problems/gas-station/)
+
+**超时**
+
+思路：
+
+- 外层循环，从索引为`i`处开始判断
+- 内循环，检查是否能满足汽油消耗
+
+```python
+from typing import List
+
+
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        n = len(cost)
+        ans = -1
+
+        for i in range(n):
+            if gas[i] == cost[i] and i != 0:
+                continue
+            j = i
+            flag = False
+            buffer = gas[i] - cost[i]
+            while not flag and buffer >= 0:
+                j = (j + 1) % n
+                buffer += gas[j]
+                buffer -= cost[j]
+                if j == i and buffer >= 0:
+                    ans = i
+                    flag = True
+        return ans
+
+
+def main():
+    # gas = [1, 2, 3, 4, 5]
+    # cost = [3, 4, 5, 1, 2]
+    # gas = [2, 3, 4]
+    # cost = [3, 4, 3]
+    gas = [2]
+    cost = [2]
+    print(Solution().canCompleteCircuit(gas, cost))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+https://leetcode.cn/problems/gas-station/solutions/2933132/yong-zhe-xian-tu-zhi-guan-li-jie-pythonj-qccr/
+
+题解方法更巧妙
+
+思路：
+
+- 由于答案唯一
+- 找出累计耗油最大的站台，从该站台之后的站台出发，汽油将一直有剩余
+<center class="half">
+    <img src="./my_LeetCode.assets/image-20241219220852438.png" alt="image-20241219220852438" style="zoom:40%;" />
+    <img src="./my_LeetCode.assets/image-20241219220744711.png" alt="image-20241219220744711" style="zoom:40%;" />
+</center>
+
+```python
+from typing import List
+
+
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        if sum(gas) < sum(cost):
+            return -1
+        n = len(cost)
+        ans = 0
+        sub = [g - c for g, c in zip(gas, cost)]
+        buffer = 0
+        min_bf = 0
+
+        # 由于答案唯一，所以
+        # 找出累计耗油最大的站台，从该站台之后开始 汽油都有剩余
+        for i in range(n):
+            buffer += sub[i]
+            if buffer < min_bf:
+                min_bf = buffer
+                ans = i + 1
+        return ans
+
+
+def main():
+    # gas = [1, 2, 3, 4, 5]
+    # cost = [3, 4, 5, 1, 2]
+    gas = [2, 3, 4]
+    cost = [3, 4, 3]
+    # gas = [2]
+    # cost = [2]
+    print(Solution().canCompleteCircuit(gas, cost))
+
+
+if __name__ == '__main__':
+    main()
+
+```
 
 
 
