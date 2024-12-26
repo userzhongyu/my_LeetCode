@@ -3509,7 +3509,38 @@ https://leetcode.cn/problems/candy/solutions/17847/candy-cong-zuo-zhi-you-cong-y
   ```
 
   
+### 137. 只出现一次的数字 II
+空间复杂度不符合要求
+思路：
+- 定义字典完成映射
+  返回值为1的
 
+```python
+from typing import List
+
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        dic = {}
+        for item in nums:
+            if item not in dic:
+                dic[item] = 1
+            else:
+                dic[item] += 1
+        for item in dic:
+            if dic[item] == 1:
+                return item
+
+
+def main():
+    nums = [2, 2, 3, 2]
+    print(Solution().singleNumber(nums))
+
+
+if __name__ == '__main__':
+    main()
+```
+  
 
 
 # The END
