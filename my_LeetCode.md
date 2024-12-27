@@ -3640,6 +3640,17 @@ if __name__ == '__main__':
 
 ```
 
+https://leetcode.cn/problems/copy-list-with-random-pointer/solutions/2993775/bu-yong-ha-xi-biao-de-zuo-fa-pythonjavac-nzdo/
+题解思路：
+必须记录原链表节点到新链表节点的映射（map）。这样可以通过原链表 random 指向的节点，知道新链表的 random 应该指向哪个节点。
+
+难道要用哈希表吗？不需要，我们可以把新链表和旧链表「混在一起」。
+
+例如链表 1→2→3，依次复制每个节点（创建新节点并复制 val 和 next），把新节点直接插到原节点的后面，形成一个交错链表：
+
+1→1′→2→2′→3→3′
+ 如此一来，原链表节点的下一个节点，就是其对应的新链表节点了！
+
 
 # The END
 
