@@ -3509,7 +3509,7 @@ https://leetcode.cn/problems/candy/solutions/17847/candy-cong-zuo-zhi-you-cong-y
   ```
 
   
-### 137. 只出现一次的数字 II
+### [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)
 空间复杂度不符合要求
 思路：
 - 定义字典完成映射
@@ -3542,7 +3542,7 @@ if __name__ == '__main__':
 ```
 
 
-### 138. 随机链表的复制
+### [138. 随机链表的复制](https://leetcode.cn/problems/copy-list-with-random-pointer/)
 思路：
 - 哈希映射
 
@@ -3641,7 +3641,7 @@ if __name__ == '__main__':
 ```
 
 https://leetcode.cn/problems/copy-list-with-random-pointer/solutions/2993775/bu-yong-ha-xi-biao-de-zuo-fa-pythonjavac-nzdo/
-题解思路：
+思路：
 必须记录原链表节点到新链表节点的映射（map）。这样可以通过原链表 random 指向的节点，知道新链表的 random 应该指向哪个节点。
 
 难道要用哈希表吗？不需要，我们可以把新链表和旧链表「混在一起」。
@@ -3652,5 +3652,111 @@ https://leetcode.cn/problems/copy-list-with-random-pointer/solutions/2993775/bu-
  如此一来，原链表节点的下一个节点，就是其对应的新链表节点了！
 
 
+ ### [139. 单词拆分](https://leetcode.cn/problems/word-break/)
+ 超时
+ 思路：
+ - 深度优先搜索
+
+```python
+from typing import List
+
+
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        s_set = set(s)
+        w_set = set(''.join(wordDict))
+        if s_set > w_set:
+            return False
+        return self.dfs(s, wordDict, [False])
+
+
+    def dfs(self, s: str, wordDict: List[str], res: list):
+        if not s:
+            res[0] = True
+            return
+        for i in range(len(s) - 1, -1, -1):
+            if s[:i + 1] in wordDict:
+                self.dfs(s[i + 1:], wordDict, res)
+
+        return res[0]
+
+
+def main():
+    # s = "leetcode"
+    # wordDict = ["leet", "code"]
+    # s = "catsandog"
+    # wordDict = ["cats", "dog", "sand", "and", "cat"]
+    # s = "a"
+    # wordDict = ["a"]
+    # s = "ab"
+    # wordDict = ["a"]
+    s = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    wordDict = ["aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa", "ba"]
+    print(Solution().wordBreak(s, wordDict))
+
+
+if __name__ == '__main__':
+    main()
+```
+
+
+
+https://leetcode.cn/problems/word-break/solutions/50986/dong-tai-gui-hua-ji-yi-hua-hui-su-zhu-xing-jie-shi/
+
+思路：
+
+- 动态规划
+
+  - 初始化 `dp=[False,⋯,False]`，长度为 n+1。n 为字符串长度。`dp[i]` 表示 s 的前 i 位是否可以用 wordDict 中的单词表示。
+
+  - 初始化` dp[0]=True`，空字符可以被表示。
+
+  - 遍历字符串的所有子串，遍历开始索引 i，遍历区间 [0,n)：
+
+    - 遍历结束索引 j，遍历区间 [i+1,n+1)：
+    - 若 `dp[i]=True 且 s[i,⋯,j) 在 wordlist` 中：`dp[j]=True`。解释：`dp[i]==True` 说明 s 的前 i 位可以用 wordDict 表示，则 `s[i,⋯,j)` 出现在 wordDict 中，明 s 的前 j 位可以表示。
+
+  - 返回 `dp[n]`
+
+```PYTHON
+from typing import List
+
+
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        dp = [False] * (len(s) + 1)
+        dp[0] = True
+
+        for i in range(len(s)):
+            for j in range(i + 1, len(s) + 1):
+                if dp[i] and s[i:j] in wordDict:
+                    dp[j] = True
+        return dp[-1]
+
+
+def main():
+    # s = "leetcode"
+    # wordDict = ["leet", "code"]
+    # s = "catsandog"
+    # wordDict = ["cats", "dog", "sand", "and", "cat"]
+    # s = "a"
+    # wordDict = ["a"]
+    # s = "ab"
+    # wordDict = ["a"]
+    # s = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    # wordDict = ["aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa", "ba"]
+    print(Solution().wordBreak(s, wordDict))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+
+
 # The END
+
 
