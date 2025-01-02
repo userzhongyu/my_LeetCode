@@ -3755,7 +3755,104 @@ if __name__ == '__main__':
 
 
 
+### [140. 单词拆分 II](https://leetcode.cn/problems/word-break-ii/)
 
+思路：
+
+- 由于`1 <= s.length <= 20`，可以使用深度优先
+
+```python
+from typing import List
+
+
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        ans = []
+        path = []
+        self.dfs(s, wordDict, path,  ans)
+        return ans
+
+    def dfs(self, s: str, wordDict: list, path: list, ans: list):
+        if s == '':
+            temp = ' '.join(path)
+            ans.append(temp)
+            return
+
+        for i in range(len(s)):
+            if s[:i + 1] in wordDict:
+                path.append(s[:i + 1])
+                self.dfs(s[i + 1:], wordDict, path, ans)
+                path.pop()
+
+
+def main():
+    s = "catsanddog"
+    wordDict = ["cat", "cats", "and", "sand", "dog"]
+    # s = "pineapplepenapplepineapplepenapple"
+    # wordDict = ["apple", "pen", "applepen", "pine", "pineapple"]
+    # s = "catsandog"
+    # wordDict = ["cats", "dog", "sand", "and", "cat"]
+    # s = "c"
+    # wordDict = ["c", "dog", "sand", "and", "cat"]
+    print(Solution().wordBreak(s, wordDict))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+思路：
+
+- 使用`@cache`装饰器（用于**函数结果缓存**。通过缓存装饰器，函数可以记住之前的调用结果，从而避免重复计算，提高效率），进行记忆化回溯
+  - 装饰器 `@cache` 要求函数参数是**可哈希的**。
+  - **当你第二次调用函数时，如果参数与之前的一次调用相同，函数不会再次执行，而是直接返回缓存中的结果**。这就是 `cache` 装饰器的核心功能。它通过保存已经计算过的结果，避免了重复计算，从而提升效率。
+
+对本题来说，**没有优化**
+
+
+
+```python
+from functools import cache
+from typing import List
+
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        ans = []
+
+        @cache
+        def dfs(_s: str, path: tuple):
+            if not _s:  # 当剩余字符串为空时
+                ans.append(' '.join(path))
+                return
+
+            for i in range(1, len(_s) + 1):  # 遍历前缀
+                prefix = _s[:i]
+                if prefix in wordDict:
+                    dfs(_s[i:], path + (prefix,))  # 将当前前缀加入路径后递归
+
+        dfs(s, tuple())  # 初始化递归时路径为空元组
+        return ans
+
+
+def main():
+    s = "catsanddog"
+    wordDict = ["cat", "cats", "and", "sand", "dog"]
+    # s = "pineapplepenapplepineapplepenapple"
+    # wordDict = ["apple", "pen", "applepen", "pine", "pineapple"]
+    # s = "catsandog"
+    # wordDict = ["cats", "dog", "sand", "and", "cat"]
+    # s = "c"
+    # wordDict = ["c", "dog", "sand", "and", "cat"]
+    print(Solution().wordBreak(s, wordDict))
+
+
+if __name__ == '__main__':
+    main()
+
+```
 
 # The END
 
