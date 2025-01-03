@@ -3854,6 +3854,154 @@ if __name__ == '__main__':
 
 ```
 
+
+### [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)
+
+思路：
+
+- 保存遍历过的节点，当第二次遍历到同一个节点时，返回该节点
+
+```python
+# Definition for singly-linked list.
+from typing import Optional
+
+
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        lst = []
+        p = head
+        while p:
+            if p not in lst:
+                lst.append(p)
+            else:
+                return p
+            p = p.next
+        return None
+
+
+# 将输入的形如“[1,2,3,4,5]”的字符串转换成链表
+def createLinkedListWithCycle(values, pos):
+    if not values:
+        return None
+    nodes = [ListNode(val) for val in values]
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+    if pos != -1:
+        nodes[-1].next = nodes[pos]
+    return nodes[0]
+
+
+def main():
+    head = [3, 2, 0, -4]
+    pos = 1
+    head = createLinkedListWithCycle(head, pos)
+    print(Solution().detectCycle(head).val)
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+https://leetcode.cn/problems/linked-list-cycle-ii/solutions/12616/linked-list-cycle-ii-kuai-man-zhi-zhen-shuang-zhi-/
+
+思路：
+
+- 快慢指针
+
+- 设两指针 `fast`，`slow` 指向链表头部 `head` 。令 `fast` 每轮走 2 步，`slow` 每轮走 1 步。
+
+- 第一种结果： 
+
+  - fast 指针走过链表末端，说明链表无环，此时直接返回 null。
+  - 如果链表存在环，则双指针一定会相遇。因为每走 1 轮，`fast` 与 `slow` 的间距 +1，`fast` 一定会追上 `slow` 。
+
+- 第二种结果：
+
+  - 当`fast == slow`时， 两指针在环中第一次相遇。下面分析此时 `fast` 与 `slow` 走过的步数关系：
+
+    设链表共有 a+b 个节点，其中 链表头部到链表入口 有 a 个节点（不计链表入口节点）， 链表环 有 b 个节点（这里需要注意，a 和 b 是未知数，例如图解上链表 a=4 , b=5）；设两指针分别走了 f，s 步，则有：
+
+    ​	`fast` 走的步数是 `slow` 步数的 2 倍，即 **f=2s**；（ fast 每轮走 2 步）
+    ​	`fast` 比 `slow` 多走了 n 个环的长度，即 **f=s+nb**；（ 双指针都走过 a 步，然后在环内绕圈直到重合，重合时 fast 比 slow 多走 环的长度整数倍 ）。
+    将以上两式相减得到 f=2nb，s=nb，即 `fast` 和 `slow` 指针分别走了 2n，n 个环的周长。
+
+    如果让指针从链表头部一直向前走并统计步数k，那么所有走到链表入口节点时的步数 是：**k=a+nb** ，即先走 a 步到入口节点，之后每绕 n 圈环（ b 步）都会再次到入口节点。而目前 `slow` 指针走了 nb 步。
+
+    因此，我们只要想办法让 `slow` 再走 a 步停下来，就可以到环的入口。
+
+  - 双指针第二次相遇：
+    令 fast 重新指向链表头部节点。此时 f=0，s=nb 。
+    `slow` 和 `fast` 同时每轮向前走 1 步。
+    当 `fast` 指针走到 f=a 步时，`slow` 指针走到 s=a+nb 步。此时两指针重合，并同时指向链表环入口，返回 `slow/fast` 指向的节点即可。
+
+```python
+# Definition for singly-linked list.
+from typing import Optional
+
+
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        fast, slow = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            # 第一次相遇(实际上为第二次,初始化 slow 和 fast 时已经相遇过一次)
+            if fast == slow:
+                fast = head
+                # 再次移动指针
+                while fast != slow:
+                    slow = slow.next
+                    fast = fast.next
+                return fast
+        # 不存在环
+        return None
+
+
+# 将输入的形如“[1,2,3,4,5]”的字符串转换成链表
+def createLinkedListWithCycle(values, pos):
+    if not values:
+        return None
+    nodes = [ListNode(val) for val in values]
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+    if pos != -1:
+        nodes[-1].next = nodes[pos]
+    return nodes[0]
+
+
+def main():
+    # head = [3, 2, 0, -4]
+    # pos = 1
+    head = [1, 2]
+    pos = 0
+    # head = [1]
+    # pos = -1
+    head = createLinkedListWithCycle(head, pos)
+    temp = Solution().detectCycle(head)
+    if temp:
+        print(temp.val)
+    else:
+        print(temp)
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
 # The END
 
 
