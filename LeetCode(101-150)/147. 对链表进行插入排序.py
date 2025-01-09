@@ -10,28 +10,24 @@ class ListNode:
 
 class Solution:
     def insertionSortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        p = head
-        q = p.next
-        p.next = None
-        while q:
-            cur = q
-            q = q.next
-            # 取所需插入位置的前一个节点的指针
-            loc = ListNode(-1, p)
+        l = ListNode(-1, head)
+        cur = head.next
+        head.next = None
+        # 待处理的节点
+        while cur:
+            # 插入位置的前驱节点
+            loc = l
             # 寻找插入位置
-            while loc.next and loc.next.val <= cur.val:
+            while loc.next and loc.next.val < cur.val:
                 loc = loc.next
-            # 插入索引为0的位置，单独处理
-            if loc.next == p:
-                loc.next = cur
-                cur.next = p
-                p = cur
-            # 插入其他位置
-            else:
-                temp = loc.next
-                loc.next = cur
-                cur.next = temp
-        head = p
+            # 插入节点
+            nex = cur.next
+            cur.next = loc.next
+            loc.next = cur
+            cur = nex
+            # 单独处理插入到第0个位置的情况
+            if loc == l:
+                head = loc.next
         return head
 
 
