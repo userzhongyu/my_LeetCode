@@ -4538,6 +4538,142 @@ if __name__ == '__main__':
 
 ```
 
+### [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/)
+
+**超出内存限制**
+
+思路：
+
+- 动态规划
+- `left`~`right`表示当前计算的子数组区间
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [[1] * n for _ in range(n)]
+        maxmul = nums[0]
+        for left in range(n):
+            for right in range(left, n):
+                if right == left:
+                    dp[left][right] = nums[left]
+                else:
+                    dp[left][right] = nums[right] * dp[left][right - 1]
+                maxmul = dp[left][right] if dp[left][right] > maxmul else maxmul
+        return maxmul
+
+
+def main():
+    nums = [2, 3, -2, 4]  # 6
+    # nums = [-2, 0, -1]  # 0
+    nums = [1]
+    print(Solution().maxProduct(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+**超出内存限制**
+
+思路：
+
+- 添加剪枝操作
+- 如果`nums[i] < nums[i - 1] * nums[i]`，则不计算`left == i`的这一次，直接将`left == i - 1`的结果当做`left == i`的结果
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [[1] * n for _ in range(n)]
+        maxmul = nums[0]
+        for left in range(n):
+            for right in range(left, n):
+                if right == left:
+                    dp[left][right] = nums[left]
+                elif left > 0 and nums[right] <= dp[left - 1][right]:
+                    dp[left][right] = dp[left - 1][right]
+                    if right < n - 1:
+                        dp[left][right + 1] = dp[left - 1][right]
+                    break
+                else:
+                    dp[left][right] = nums[right] * dp[left][right - 1]
+                maxmul = dp[left][right] if dp[left][right] > maxmul else maxmul
+        return maxmul
+
+
+def main():
+    nums = [2, 3, -2, 4]  # 6
+    # nums = [-2, 0, -1]  # 0
+    # nums = [1]
+    nums = [-5, 2, 4, 1, -2, 2, -6, 3, -1, -1, -1, -2, -3, 5, 1, -3, -4, 2, -4, 6, -1, 5, -6, 1, -1,..., -1]
+    print(Solution().maxProduct(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+[152. 乘积最大子数组 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-product-subarray/solutions/7561/hua-jie-suan-fa-152-cheng-ji-zui-da-zi-xu-lie-by-g/)
+
+思路：
+
+- 遍历数组时计算当前最大值，不断更新
+- 令`imax`为当前最大值，则当前最大值为` imax = max(imax * nums[i], nums[i])`
+- **由于存在负数，那么会导致最大的变最小的，最小的变最大的。**因此还需要维护当前最小值`imin`，`imin = min(imin * nums[i], nums[i])`
+- 当负数出现时则`imax`与`imin`进行交换再进行下一步计算
+- 时间复杂度：O(n)
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        n = len(nums)
+        imax = 1
+        imin = 1
+        maxmul = nums[0]
+        for i in range(n):
+            if nums[i] < 0:
+                imax, imin = imin, imax
+            imax = max(imax * nums[i], nums[i])
+            imin = min(imin * nums[i], nums[i])
+            maxmul = max(maxmul, imax)
+        return maxmul
+
+
+def main():
+    nums = [2, 3, -2, 4]  # 6
+    # nums = [-2, 0, -1]  # 0
+    # nums = [1]
+    nums = [-5, 2, 4, 1, -2, 2, -6, 3, -1, -1, -1, -2, -3, 5, 1, -3, -4, 2, -4, 6, -1, 5, -6, 1, -1, -1]
+    print(Solution().maxProduct(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
 # The END
 
 
