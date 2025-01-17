@@ -4725,6 +4725,55 @@ if __name__ == '__main__':
 
 
 
+### [154. 寻找旋转排序数组中的最小值 II](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/)
+
+思路：
+
+- 在上一题的基础上，额外考虑`nus[mid] == nums[hight]`的情况
+- 由于数组内存在重复元素，故可能出现下列两种额外的情况，它们均满足`nums[mid] == nums[hight]`
+  - `nums = [1, 3, 3, 3]`
+  - `nums = [3, 3, 1, 3]`
+- 即最小值在中点的左右两边，其中最小值在中点右边的情况可直接通过153题代码处理
+- 当最小值在中点左边时，可以将`hight`往左移一步，逐渐去除重复值
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        low, hight = 0, len(nums) - 1
+        while low < hight:
+            mid = (low + hight) // 2
+            if nums[mid] == nums[hight]:
+                hight -= 1
+            elif nums[mid] < nums[hight]:
+                hight = mid
+            else:
+                low = mid + 1
+
+        return nums[low]
+
+
+def main():
+    nums = [2, 2, 2, 0, 1]
+    # nums = [1, 3, 3]
+    # nums = [3,3,1,3]
+    nums = [3,3,1,3,3,3,3]
+
+    print(Solution().findMin(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
+
 # The END
 
 
