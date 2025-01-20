@@ -4795,7 +4795,7 @@ class Solution:
     def findPeakElement(self, nums: List[int]) -> int:
         low, hight = 0, len(nums) - 1
         while low < hight:
-            mid =   (low + hight) // 2
+            mid =  (low + hight) // 2
             if nums[mid] > nums[mid + 1]:
                 if nums[mid] > nums[mid - 1]:
                     return mid
@@ -4803,7 +4803,7 @@ class Solution:
                     hight = mid
             else:
                 low = mid + 1
-        return (low + hight) // 2
+        return (low + hight) // 2  # 返回最新的mid
 
 
 def main():
