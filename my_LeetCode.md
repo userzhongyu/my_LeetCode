@@ -4772,6 +4772,57 @@ if __name__ == '__main__':
 ```
 
 
+### [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
+
+思路：
+
+- 由于题目要求
+  - 当`nums`递增时，返回最后一个元素下标；
+  - 当`nums`递减时，返回第一个元素下标
+  - `nums = [1,2,1,2,3,4]`时，返回索引5也可以
+  - `nums = [3,2,1,2,1]`时，返回索引0也可以
+- 采用二分法
+- 可以直接寻找`nums`中的最大值
+
+
+
+```python
+import math
+from typing import List
+
+
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        low, hight = 0, len(nums) - 1
+        while low < hight:
+            mid =   (low + hight) // 2
+            if nums[mid] > nums[mid + 1]:
+                if nums[mid] > nums[mid - 1]:
+                    return mid
+                else:
+                    hight = mid
+            else:
+                low = mid + 1
+        return (low + hight) // 2
+
+
+def main():
+    # nums = [1,2,1,3,5,6,4]
+    # nums = [1, 2, 3, 1]
+    # nums = [1]
+    # nums = [1, 2, 3, 4]
+    # nums = [3, 2, 1, -1]
+    nums = [1, 2]
+    # nums = [4, 3, 2, 1, 4]
+
+    print(Solution().findPeakElement(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
 
 
 # The END
