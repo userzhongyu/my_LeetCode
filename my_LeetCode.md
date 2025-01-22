@@ -4825,6 +4825,71 @@ if __name__ == '__main__':
 
 
 
+
+### [164. 最大间距](https://leetcode.cn/problems/maximum-gap/)
+
+[164. 最大间距 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-gap/solutions/2772242/xiang-xi-jie-shi-on-fen-tong-fa-pythonja-mi5s/)
+
+思路：
+
+- 桶排序
+
+- 计算平均差值`avg`
+- 按照`avg`将数组分段（分桶），桶内元素间的最大差值为`avg`，这一步的时间复杂度为O(n)
+- 最大差值一定大于平均差值，所以所求值一定为`桶[i].min - 桶[i-1].max`
+
+
+
+```python
+from typing import List
+
+
+class Solution:
+    def maximumGap(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 2:
+            return 0
+        M = max(nums)
+        m = min(nums)
+        avg = max(1, (M - m) // n)  # 计算桶的容量
+        res = 0
+        buckets = [[] for _ in range((M - m) // avg + 1)]  # 创建桶
+
+        # 装桶
+        for i in range(n):
+            buckets[(nums[i] - m) // avg].append(nums[i])
+
+        # 计算每个桶的最大最小值
+        i = 0
+        while i < len(buckets):
+            if buckets[i]:
+                buckets[i].insert(0, min(buckets[i]))
+                buckets[i].append(max(buckets[i]))
+                i += 1
+            else:
+                buckets.pop(i)
+
+        # print(buckets)
+
+        # 计算桶间最大差值
+        for i in range(len(buckets) - 1):
+            res = max(res, buckets[i + 1][0] - buckets[i][-1])
+
+        return res
+
+
+def main():
+    nums = [3,6,100,4,1,2]
+    print(Solution().maximumGap(nums))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+
+
 # The END
 
 
